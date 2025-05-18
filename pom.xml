@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>edu.rafael</groupId>
 	<artifactId>park-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>park-api</name>
 	<description>Projeto de api rest com spring para controle de estacionamento</description>
 	<url/>
@@ -64,6 +64,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.0.0</version>
 		</dependency>
 	</dependencies>
 
