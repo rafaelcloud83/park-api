@@ -33,6 +33,4 @@ build/
 .vscode/
 
 ### depois do projeto pronto, colocar # nas linhas abaixo para liberar o envio ao github ###
-README.md
-/data
-#Insomnia.json
+#README.md
