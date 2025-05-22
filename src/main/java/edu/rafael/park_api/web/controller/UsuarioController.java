@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Usuários", description = "Contém todas as operações relativas aos recursos para cadastro, edição e leitura de usuários")
+@Tag(name = "Usuários", description = "Contém todas as operações relativas ao recurso de um usuario")
 @RestController
 @RequestMapping("api/v1/usuarios")
 @RequiredArgsConstructor

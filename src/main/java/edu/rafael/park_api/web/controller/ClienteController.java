@@ -7,6 +7,13 @@ import edu.rafael.park_api.service.UsuarioService;
 import edu.rafael.park_api.web.dto.ClienteCreateDto;
 import edu.rafael.park_api.web.dto.ClienteResponseDto;
 import edu.rafael.park_api.web.dto.mapper.ClienteMapper;
+import edu.rafael.park_api.web.exception.ErrorMessage;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Clientes", description = "Contém todas as operações relativas ao recurso de um cliente")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/clientes")
@@ -26,6 +34,28 @@ public class ClienteController {
     private final ClienteService clienteService;
     private final UsuarioService usuarioService;
 
+    @Operation(
+            summary = "Criar um novo cliente",
+            description = "Recurso para criar um novo cliente vinculado a um usuário cadastrado. Requisição exige um Bearer Token. Acesso restrito a CLIENTE",
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ClienteResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Token inválido ou expirado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão de acesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "409", description = "CPF já cadastrado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "422", description = "Cliente com dados inválidos",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class)))
+            }
+    )
     @PostMapping()
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<ClienteResponseDto> create(@RequestBody @Valid ClienteCreateDto dto, @AuthenticationPrincipal JwtUserDetails userDetails) {
