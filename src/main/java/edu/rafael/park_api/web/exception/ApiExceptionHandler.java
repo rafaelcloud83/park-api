@@ -1,5 +1,6 @@
 package edu.rafael.park_api.web.exception;
 
+import edu.rafael.park_api.exception.CpfUniqueViolationException;
 import edu.rafael.park_api.exception.UserInvalidPasswordException;
 import edu.rafael.park_api.exception.UserNotFoundException;
 import edu.rafael.park_api.exception.UsernameUniqueViolationException;
@@ -38,8 +39,8 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Campo(s) inválido(s).", result));
     }
 
-    @ExceptionHandler(UsernameUniqueViolationException.class)
-    public ResponseEntity<ErrorMessage> usernameUniqueViolationException(
+    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
+    public ResponseEntity<ErrorMessage> uniqueViolationException(
             RuntimeException ex, HttpServletRequest request) {
         log.error("Api Error - ", ex);
         return ResponseEntity
