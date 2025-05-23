@@ -2,11 +2,14 @@ package edu.rafael.park_api.web.controller;
 
 import edu.rafael.park_api.entity.Cliente;
 import edu.rafael.park_api.jwt.JwtUserDetails;
+import edu.rafael.park_api.repository.projection.ClienteProjection;
 import edu.rafael.park_api.service.ClienteService;
 import edu.rafael.park_api.service.UsuarioService;
 import edu.rafael.park_api.web.dto.ClienteCreateDto;
 import edu.rafael.park_api.web.dto.ClienteResponseDto;
+import edu.rafael.park_api.web.dto.PageableDto;
 import edu.rafael.park_api.web.dto.mapper.ClienteMapper;
+import edu.rafael.park_api.web.dto.mapper.PageableMapper;
 import edu.rafael.park_api.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,6 +19,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,7 +38,7 @@ public class ClienteController {
 
     @Operation(
             summary = "Criar um novo cliente",
-            description = "Recurso para criar um novo cliente vinculado a um usuário cadastrado. Requisição exige um Bearer Token. Acesso restrito a CLIENTE",
+            description = "Requisição exige um Bearer Token. Acesso restrito a CLIENTE",
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso",
@@ -86,5 +91,12 @@ public class ClienteController {
     public ResponseEntity<ClienteResponseDto> getById(@PathVariable Long id) {
         Cliente cliente = clienteService.buscarPorId(id);
         return ResponseEntity.status(HttpStatus.OK).body(ClienteMapper.toDto(cliente));
+    }
+
+    @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PageableDto> getAll(Pageable pageable) {
+        Page<ClienteProjection> clientes = clienteService.buscarTodos(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(PageableMapper.toDto(clientes));
     }
 }
