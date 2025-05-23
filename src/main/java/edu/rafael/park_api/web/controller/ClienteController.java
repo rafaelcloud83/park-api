@@ -12,6 +12,7 @@ import edu.rafael.park_api.web.dto.mapper.ClienteMapper;
 import edu.rafael.park_api.web.dto.mapper.PageableMapper;
 import edu.rafael.park_api.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,11 +22,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
 @Tag(name = "Clientes", description = "Contém todas as operações relativas ao recurso de um cliente")
 @RequiredArgsConstructor
@@ -93,9 +97,42 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.OK).body(ClienteMapper.toDto(cliente));
     }
 
+    @Operation(
+            summary = "Buscar todos os clientes",
+            description = "Requisição exige um Bearer Token. Acesso restrito a ADMIN",
+            security = @SecurityRequirement(name = "security"),
+            parameters = {
+                    @Parameter(
+                            in = QUERY, name = "page",
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "0")),
+                            description = "Número da página a ser retornada"
+                    ),
+                    @Parameter(
+                            in = QUERY, name = "size",
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "20")),
+                            description = "Número de registros por página"
+                    ),
+                    @Parameter(
+                            in = QUERY, name = "sort", hidden = true,
+                            content = @Content(schema = @Schema(type = "string", defaultValue = "nome,asc")),
+                            description = "Campo(s) para ordenação"
+                    ),
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Clientes encontrados com sucesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ClienteResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Token inválido ou expirado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão de acesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class)))
+            }
+    )
     @GetMapping()
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PageableDto> getAll(Pageable pageable) {
+    public ResponseEntity<PageableDto> getAll(@Parameter(hidden = true) @PageableDefault(size = 5, sort = {"nome"}) Pageable pageable) {
         Page<ClienteProjection> clientes = clienteService.buscarTodos(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(PageableMapper.toDto(clientes));
     }
