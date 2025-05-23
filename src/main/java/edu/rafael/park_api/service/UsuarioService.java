@@ -2,7 +2,7 @@ package edu.rafael.park_api.service;
 
 import edu.rafael.park_api.entity.Usuario;
 import edu.rafael.park_api.exception.UserInvalidPasswordException;
-import edu.rafael.park_api.exception.UserNotFoundException;
+import edu.rafael.park_api.exception.EntitiesNotFoundException;
 import edu.rafael.park_api.exception.UsernameUniqueViolationException;
 import edu.rafael.park_api.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario buscarPorId(Long id) {
         return usuarioRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException(String.format("Usuário id=%s não encontrado", id))
+                () -> new EntitiesNotFoundException(String.format("Usuário id=%s não encontrado", id))
         );
     }
 
@@ -57,7 +57,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario buscarPorUsername(String username) {
         return usuarioRepository.findByUsername(username).orElseThrow(
-                () -> new UserNotFoundException(String.format("Usuário com username=%s não encontrado", username))
+                () -> new EntitiesNotFoundException(String.format("Usuário com username=%s não encontrado", username))
         );
     }
 

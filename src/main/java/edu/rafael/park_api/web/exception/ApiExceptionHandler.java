@@ -2,7 +2,7 @@ package edu.rafael.park_api.web.exception;
 
 import edu.rafael.park_api.exception.CpfUniqueViolationException;
 import edu.rafael.park_api.exception.UserInvalidPasswordException;
-import edu.rafael.park_api.exception.UserNotFoundException;
+import edu.rafael.park_api.exception.EntitiesNotFoundException;
 import edu.rafael.park_api.exception.UsernameUniqueViolationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.CONFLICT, ex.getMessage()));
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(EntitiesNotFoundException.class)
     public ResponseEntity<ErrorMessage> userNotFoundException(
             RuntimeException ex, HttpServletRequest request) {
         log.error("Api Error - ", ex);
