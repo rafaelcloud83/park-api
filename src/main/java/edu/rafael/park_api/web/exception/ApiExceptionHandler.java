@@ -1,9 +1,6 @@
 package edu.rafael.park_api.web.exception;
 
-import edu.rafael.park_api.exception.CpfUniqueViolationException;
-import edu.rafael.park_api.exception.UserInvalidPasswordException;
-import edu.rafael.park_api.exception.EntitiesNotFoundException;
-import edu.rafael.park_api.exception.UsernameUniqueViolationException;
+import edu.rafael.park_api.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,7 +36,7 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Campo(s) inválido(s).", result));
     }
 
-    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
+    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class, CodigoUniqueViolationException.class})
     public ResponseEntity<ErrorMessage> uniqueViolationException(
             RuntimeException ex, HttpServletRequest request) {
         log.error("Api Error - ", ex);
