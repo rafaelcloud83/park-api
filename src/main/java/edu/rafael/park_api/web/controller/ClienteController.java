@@ -137,6 +137,22 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.OK).body(PageableMapper.toDto(clientes));
     }
 
+    @Operation(
+            summary = "Buscar dados do cliente autenticado",
+            description = "Requisição exige um Bearer Token. Acesso restrito a CLIENTE",
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Cliente encontrado com sucesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ClienteResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Token inválido ou expirado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão de acesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class)))
+            }
+    )
     @GetMapping("/detalhes")
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<ClienteResponseDto> getDetails(@AuthenticationPrincipal JwtUserDetails userDetails) {
