@@ -30,4 +30,11 @@ public class VagaService {
                 () -> new EntitiesNotFoundException(String.format("Vaga com código %s não encontrada", codigo))
         );
     }
+
+    @Transactional(readOnly = true)
+    public Vaga buscarPorVagaLivre() {
+        return vagaRepository.findFirstByStatus(Vaga.StatusVaga.LIVRE).orElseThrow(
+                () -> new EntitiesNotFoundException("Nenhuma vaga livre encontrada")
+        );
+    }
 }
