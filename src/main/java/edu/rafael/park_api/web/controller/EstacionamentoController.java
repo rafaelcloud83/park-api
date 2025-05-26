@@ -8,6 +8,8 @@ import edu.rafael.park_api.web.dto.EstacionamentoResponseDto;
 import edu.rafael.park_api.web.dto.mapper.ClienteVagaMapper;
 import edu.rafael.park_api.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -72,6 +74,28 @@ public class EstacionamentoController {
         return ResponseEntity.created(location).body(responseDto);
     }
 
+    @Operation(
+            summary = "Buscar um veículo no estacionamento pelo recibo",
+            description = "Requisição exige um Bearer Token. Acesso restrito a ADMIN ou CLIENTE",
+            security = @SecurityRequirement(name = "security"),
+            parameters = {
+                    @Parameter(in = ParameterIn.PATH, name = "recibo", description = "Número do recibo gerado no check-in")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Veículo encontrado com sucesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = EstacionamentoResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Token inválido ou expirado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão de acesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "404", description = "Número de recibo não encontrado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class)))
+            }
+    )
     @GetMapping("/check-in/{recibo}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE')")
     public ResponseEntity<EstacionamentoResponseDto> getByRecibo(@PathVariable String recibo) {
