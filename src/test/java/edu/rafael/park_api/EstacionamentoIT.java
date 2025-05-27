@@ -196,4 +196,54 @@ public class EstacionamentoIT {
                 .jsonPath("path").isEqualTo("/api/v1/estacionamentos/check-in/20250524-000000")
                 .jsonPath("method").isEqualTo("GET");
     }
+
+    @Test
+    public void checkOutEstacionamento_ComReciboExistente_RetornarDadosComStatus200() {
+        testClient
+                .put()
+                .uri("api/v1/estacionamentos/check-out/{recibo}", "20250524-101300")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("placa").isEqualTo("FIT-1020")
+                .jsonPath("marca").isEqualTo("FIAT")
+                .jsonPath("modelo").isEqualTo("PALIO")
+                .jsonPath("cor").isEqualTo("VERDE")
+                .jsonPath("clienteCpf").isEqualTo("81315448009")
+                .jsonPath("recibo").isEqualTo("20250524-101300")
+                .jsonPath("dataEntrada").isEqualTo("2025-05-24 10:13:00")
+                .jsonPath("vagaCodigo").isEqualTo("A-01")
+                .jsonPath("dataSaida").exists()
+                .jsonPath("valor").exists()
+                .jsonPath("desconto").exists();
+    }
+
+    @Test
+    public void checkOutEstacionamento_ComReciboInexistente_RetornarErrorMessageComStatus404() {
+        testClient
+                .put()
+                .uri("api/v1/estacionamentos/check-out/{recibo}", "20250524-000000")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("status").isEqualTo("404")
+                .jsonPath("path").isEqualTo("/api/v1/estacionamentos/check-out/20250524-000000")
+                .jsonPath("method").isEqualTo("PUT");
+    }
+
+    @Test
+    public void checkOutEstacionamento_ComPerfilCliente_RetornarErrorMessageComStatus403() {
+        testClient
+                .put()
+                .uri("api/v1/estacionamentos/check-out/{recibo}", "20250524-101300")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "maria@email.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody()
+                .jsonPath("status").isEqualTo("403")
+                .jsonPath("path").isEqualTo("/api/v1/estacionamentos/check-out/20250524-101300")
+                .jsonPath("method").isEqualTo("PUT");
+    }
 }
