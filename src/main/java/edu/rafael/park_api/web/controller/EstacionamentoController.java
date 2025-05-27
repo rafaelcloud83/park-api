@@ -104,6 +104,28 @@ public class EstacionamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
+    @Operation(
+            summary = "Operação de check-out de veículo",
+            description = "Requisição exige um Bearer Token. Acesso restrito a ADMIN",
+            security = @SecurityRequirement(name = "security"),
+            parameters = {
+                    @Parameter(in = ParameterIn.PATH, name = "recibo", description = "Número do recibo gerado no check-in")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Check-out realizado com sucesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = EstacionamentoResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Token inválido ou expirado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão de acesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "404", description = "Número de recibo não encontrado, ou já realizou o check-out",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class)))
+            }
+    )
     @PutMapping("/check-out/{recibo}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EstacionamentoResponseDto> checkOut(@PathVariable String recibo) {
