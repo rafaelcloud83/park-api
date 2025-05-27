@@ -41,7 +41,7 @@ public class EstacionamentoController {
             description = "Requisição exige um Bearer Token. Acesso restrito a ADMIN",
             security = @SecurityRequirement(name = "security"),
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Estacionamento criado com sucesso",
+                    @ApiResponse(responseCode = "201", description = "Check-in realizado com sucesso",
                             headers = @Header(name = HttpHeaders.LOCATION, description = "URL do estacionamento criada"),
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = EstacionamentoResponseDto.class))),
@@ -100,6 +100,14 @@ public class EstacionamentoController {
     @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE')")
     public ResponseEntity<EstacionamentoResponseDto> getByRecibo(@PathVariable String recibo) {
         ClienteVaga clienteVaga = clienteVagaService.buscarPorRecibo(recibo);
+        EstacionamentoResponseDto responseDto = ClienteVagaMapper.toDto(clienteVaga);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    @PutMapping("/check-out/{recibo}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EstacionamentoResponseDto> checkOut(@PathVariable String recibo) {
+        ClienteVaga clienteVaga = estacionamentoService.checkOut(recibo);
         EstacionamentoResponseDto responseDto = ClienteVagaMapper.toDto(clienteVaga);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
