@@ -1,6 +1,8 @@
 package edu.rafael.park_api;
 
 import edu.rafael.park_api.web.dto.EstacionamentoCreateDto;
+import edu.rafael.park_api.web.dto.PageableDto;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -245,5 +247,52 @@ public class EstacionamentoIT {
                 .jsonPath("status").isEqualTo("403")
                 .jsonPath("path").isEqualTo("/api/v1/estacionamentos/check-out/20250524-101300")
                 .jsonPath("method").isEqualTo("PUT");
+    }
+
+    @Test
+    public void getAllEstacionamentosPorCpf_PorClienteCpf_RetornarDadosComStatus200() {
+        PageableDto responseBody = testClient
+                .get()
+                .uri("api/v1/estacionamentos/cpf/{cpf}?size=1&page=0", "81315448009")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).isNotNull();
+        Assertions.assertThat(responseBody.getContent().size()).isEqualTo(1);
+        Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(2);
+        Assertions.assertThat(responseBody.getNumber()).isEqualTo(0);
+        Assertions.assertThat(responseBody.getSize()).isEqualTo(1);
+
+        responseBody = testClient
+                .get()
+                .uri("api/v1/estacionamentos/cpf/{cpf}?size=1&page=1", "81315448009")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).isNotNull();
+        Assertions.assertThat(responseBody.getContent().size()).isEqualTo(1);
+        Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(2);
+        Assertions.assertThat(responseBody.getNumber()).isEqualTo(1);
+        Assertions.assertThat(responseBody.getSize()).isEqualTo(1);
+    }
+
+    @Test
+    public void getAllEstacionamentosPorCpf_ComPerfilCliente_RetornarErrorMessageComStatus403() {
+        testClient
+                .get()
+                .uri("api/v1/estacionamentos/cpf/{cpf}", "81315448009")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "maria@email.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody()
+                .jsonPath("status").isEqualTo("403")
+                .jsonPath("path").isEqualTo("/api/v1/estacionamentos/cpf/81315448009")
+                .jsonPath("method").isEqualTo("GET");
     }
 }
