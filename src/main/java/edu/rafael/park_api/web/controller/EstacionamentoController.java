@@ -177,9 +177,33 @@ public class EstacionamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(pageableDto);
     }
 
-    @GetMapping()
+    @Operation(
+            summary = "Buscar todos estacionamentos do cliente logado",
+            description = "Requisição exige um Bearer Token. Acesso restrito a CLIENTE",
+            security = @SecurityRequirement(name = "security"),
+            parameters = {
+                    @Parameter(in = ParameterIn.QUERY, name = "page", description = "Representa a página retornada",
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))),
+                    @Parameter(in = ParameterIn.QUERY, name = "size", description = "Representa o total de registros por página",
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "5"))),
+                    @Parameter(in = ParameterIn.QUERY, name = "sort", hidden = true, description = "Campo(s) para ordenação",
+                            content = @Content(schema = @Schema(type = "string", defaultValue = "dataEntrada,asc")))
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Estacionamento encontrado com sucesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = PageableDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Token inválido ou expirado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "403", description = "Usuário sem permissão de acesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class)))
+            }
+    )
+    @GetMapping("/cliente")
     @PreAuthorize("hasRole('CLIENTE')")
-    public ResponseEntity<PageableDto> getAllEstacionamentosDoCliente(@AuthenticationPrincipal JwtUserDetails user,
+    public ResponseEntity<PageableDto> getAllEstacionamentosDoCliente(@AuthenticationPrincipal JwtUserDetails user, @Parameter(hidden = true)
                                                                       @PageableDefault(size = 5, sort = {"dataEntrada"}) Pageable pageable) {
         Page<ClienteVagaProjection> projection = clienteVagaService.buscarTodosPorUsuarioId(user.getId(), pageable);
         PageableDto pageableDto = PageableMapper.toDto(projection);
