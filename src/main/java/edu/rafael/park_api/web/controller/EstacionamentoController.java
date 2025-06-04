@@ -1,11 +1,14 @@
 package edu.rafael.park_api.web.controller;
 
 import edu.rafael.park_api.entity.ClienteVaga;
+import edu.rafael.park_api.repository.projection.ClienteVagaProjection;
 import edu.rafael.park_api.service.ClienteVagaService;
 import edu.rafael.park_api.service.EstacionamentoService;
 import edu.rafael.park_api.web.dto.EstacionamentoCreateDto;
 import edu.rafael.park_api.web.dto.EstacionamentoResponseDto;
+import edu.rafael.park_api.web.dto.PageableDto;
 import edu.rafael.park_api.web.dto.mapper.ClienteVagaMapper;
+import edu.rafael.park_api.web.dto.mapper.PageableMapper;
 import edu.rafael.park_api.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,6 +21,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -132,5 +139,15 @@ public class EstacionamentoController {
         ClienteVaga clienteVaga = estacionamentoService.checkOut(recibo);
         EstacionamentoResponseDto responseDto = ClienteVagaMapper.toDto(clienteVaga);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    @GetMapping("/cpf/{cpf}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PageableDto> getAllEstacionamentosPorCpf(@PathVariable String cpf,
+                                                                   @PageableDefault(size = 5, sort = "dataEntrada",
+                                                                   direction = Sort.Direction.ASC)Pageable pageable) {
+        Page<ClienteVagaProjection> projection = clienteVagaService.buscarTodosPorClienteCpf(cpf, pageable);
+        PageableDto pageableDto = PageableMapper.toDto(projection);
+        return ResponseEntity.status(HttpStatus.OK).body(pageableDto);
     }
 }
