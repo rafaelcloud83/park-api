@@ -1,6 +1,7 @@
 package edu.rafael.park_api.web.controller;
 
 import edu.rafael.park_api.entity.ClienteVaga;
+import edu.rafael.park_api.jwt.JwtUserDetails;
 import edu.rafael.park_api.repository.projection.ClienteVagaProjection;
 import edu.rafael.park_api.service.ClienteVagaService;
 import edu.rafael.park_api.service.EstacionamentoService;
@@ -23,12 +24,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -152,9 +153,8 @@ public class EstacionamentoController {
                             content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))),
                     @Parameter(in = ParameterIn.QUERY, name = "size", description = "Representa o total de registros por página",
                             content = @Content(schema = @Schema(type = "integer", defaultValue = "5"))),
-                    @Parameter(in = ParameterIn.QUERY, name = "sort", description = "Campo(s) para ordenação",
-                            content = @Content(schema = @Schema(type = "string", defaultValue = "dataEntrada,asc")),
-                            hidden = true)
+                    @Parameter(in = ParameterIn.QUERY, name = "sort", hidden = true, description = "Campo(s) para ordenação",
+                            content = @Content(schema = @Schema(type = "string", defaultValue = "dataEntrada,asc")))
             },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Estacionamento encontrado com sucesso",
@@ -171,9 +171,17 @@ public class EstacionamentoController {
     @GetMapping("/cpf/{cpf}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageableDto> getAllEstacionamentosPorCpf(@PathVariable String cpf, @Parameter(hidden = true)
-                                                                   @PageableDefault(size = 5, sort = {"dataEntrada"},
-                                                                   direction = Sort.Direction.ASC) Pageable pageable) {
+                                                                   @PageableDefault(size = 5, sort = {"dataEntrada"}) Pageable pageable) {
         Page<ClienteVagaProjection> projection = clienteVagaService.buscarTodosPorClienteCpf(cpf, pageable);
+        PageableDto pageableDto = PageableMapper.toDto(projection);
+        return ResponseEntity.status(HttpStatus.OK).body(pageableDto);
+    }
+
+    @GetMapping()
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<PageableDto> getAllEstacionamentosDoCliente(@AuthenticationPrincipal JwtUserDetails user,
+                                                                      @PageableDefault(size = 5, sort = {"dataEntrada"}) Pageable pageable) {
+        Page<ClienteVagaProjection> projection = clienteVagaService.buscarTodosPorUsuarioId(user.getId(), pageable);
         PageableDto pageableDto = PageableMapper.toDto(projection);
         return ResponseEntity.status(HttpStatus.OK).body(pageableDto);
     }
