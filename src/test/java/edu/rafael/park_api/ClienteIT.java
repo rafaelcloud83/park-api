@@ -26,6 +26,7 @@ public class ClienteIT {
                 .post()
                 .uri("/api/v1/clientes")
                 .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "jose@email.com", "123456"))
                 .bodyValue(new ClienteCreateDto("José Castro", "68827097007"))
                 .exchange()
@@ -123,6 +124,7 @@ public class ClienteIT {
         ClienteResponseDto responseBody = testClient
                 .get()
                 .uri("/api/v1/clientes/10")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -168,6 +170,7 @@ public class ClienteIT {
         PageableDto responseBody = testClient
                 .get()
                 .uri("/api/v1/clientes")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -182,6 +185,7 @@ public class ClienteIT {
         responseBody = testClient
                 .get()
                 .uri("/api/v1/clientes?size=1&page=1")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -214,6 +218,7 @@ public class ClienteIT {
         ClienteResponseDto responseBody = testClient
                 .get()
                 .uri("/api/v1/clientes/detalhes")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "maria@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()

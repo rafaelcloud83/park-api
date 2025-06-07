@@ -96,6 +96,7 @@ public class VagaIT {
         testClient
                 .get()
                 .uri("api/v1/vagas/{codigo}", "A-01")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()

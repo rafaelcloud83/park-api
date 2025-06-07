@@ -28,6 +28,7 @@ public class UsuarioIT {
                 .post()
                 .uri("/api/v1/usuarios")
                 .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(new UsuarioCreateDto("rafael@email.com", "123456"))
                 .exchange()
                 .expectStatus().isCreated()
@@ -145,6 +146,7 @@ public class UsuarioIT {
         UsuarioResponseDto responseBody = testClient
                 .get()
                 .uri("/api/v1/usuarios/100")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -159,6 +161,7 @@ public class UsuarioIT {
         responseBody = testClient
                 .get()
                 .uri("/api/v1/usuarios/101")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -173,6 +176,7 @@ public class UsuarioIT {
         responseBody = testClient
                 .get()
                 .uri("/api/v1/usuarios/101")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "maria@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -348,6 +352,7 @@ public class UsuarioIT {
         List<UsuarioResponseDto> responseBody = testClient
                 .get()
                 .uri("/api/v1/usuarios")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()

@@ -32,7 +32,7 @@ public class EstacionamentoIT {
         testClient
                 .post()
                 .uri("api/v1/estacionamentos/check-in")
-                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .bodyValue(createDto)
                 .exchange()
@@ -152,6 +152,7 @@ public class EstacionamentoIT {
         testClient
                 .get()
                 .uri("api/v1/estacionamentos/check-in/{recibo}", "20250524-101300")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -171,6 +172,7 @@ public class EstacionamentoIT {
         testClient
                 .get()
                 .uri("api/v1/estacionamentos/check-in/{recibo}", "20250524-101300")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -204,6 +206,7 @@ public class EstacionamentoIT {
         testClient
                 .put()
                 .uri("api/v1/estacionamentos/check-out/{recibo}", "20250524-101300")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -254,6 +257,7 @@ public class EstacionamentoIT {
         PageableDto responseBody = testClient
                 .get()
                 .uri("api/v1/estacionamentos/cpf/{cpf}?size=1&page=0", "81315448009")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -269,6 +273,7 @@ public class EstacionamentoIT {
         responseBody = testClient
                 .get()
                 .uri("api/v1/estacionamentos/cpf/{cpf}?size=1&page=1", "81315448009")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "admin@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -301,6 +306,7 @@ public class EstacionamentoIT {
         PageableDto responseBody = testClient
                 .get()
                 .uri("api/v1/estacionamentos/cliente?size=1&page=0")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
@@ -316,6 +322,7 @@ public class EstacionamentoIT {
         responseBody = testClient
                 .get()
                 .uri("api/v1/estacionamentos/cliente?size=1&page=1")
+                .accept(MediaType.APPLICATION_JSON)
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
