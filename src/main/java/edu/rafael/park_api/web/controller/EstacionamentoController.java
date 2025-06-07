@@ -3,8 +3,10 @@ package edu.rafael.park_api.web.controller;
 import edu.rafael.park_api.entity.ClienteVaga;
 import edu.rafael.park_api.jwt.JwtUserDetails;
 import edu.rafael.park_api.repository.projection.ClienteVagaProjection;
+import edu.rafael.park_api.service.ClienteService;
 import edu.rafael.park_api.service.ClienteVagaService;
 import edu.rafael.park_api.service.EstacionamentoService;
+import edu.rafael.park_api.service.JasperService;
 import edu.rafael.park_api.web.dto.EstacionamentoCreateDto;
 import edu.rafael.park_api.web.dto.EstacionamentoResponseDto;
 import edu.rafael.park_api.web.dto.PageableDto;
@@ -25,9 +27,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +43,8 @@ public class EstacionamentoController {
 
     private final EstacionamentoService estacionamentoService;
     private final ClienteVagaService clienteVagaService;
+    private final ClienteService clienteService;
+    private final JasperService jasperService;
 
     @Operation(
             summary = "Operação de check-in de veículo",
@@ -208,5 +210,37 @@ public class EstacionamentoController {
         Page<ClienteVagaProjection> projection = clienteVagaService.buscarTodosPorUsuarioId(user.getId(), pageable);
         PageableDto pageableDto = PageableMapper.toDto(projection);
         return ResponseEntity.status(HttpStatus.OK).body(pageableDto);
+    }
+
+    @Operation(summary = "Relatório em PDF com os estacionamentos do cliente",
+            description = "Recurso para gerar um relatório com os estacionamentos do cliente. " +
+                    "Requisição exige uso de um bearer token.",
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Relatório gerado com sucesso",
+                            content = @Content(mediaType = "application/pdf",
+                                    schema = @Schema(type = "string", format = "binary"))),
+                    @ApiResponse(responseCode = "401", description = "Token inválido ou expirado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "403", description = "Recurso não permito ao perfil de ADMIN",
+                            content = @Content(mediaType = " application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class)))
+            }
+    )
+    @GetMapping("/relatorio")
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<byte[]> getRelatorio(@AuthenticationPrincipal JwtUserDetails user) {
+        String cpf = clienteService.buscarPorUsuarioId(user.getId()).getCpf();
+        jasperService.addParams("CPF", cpf);
+
+        byte[] bytes = jasperService.gerarPdf();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.attachment()
+                        .filename(cpf + "-" + System.currentTimeMillis() + ".pdf")
+                        .build());
+        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
 }
