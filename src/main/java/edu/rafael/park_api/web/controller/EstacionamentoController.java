@@ -35,7 +35,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
-@Tag(name = "Estacionamentos", description = "Contém todas as operações relativas ao recurso de entrada e saída de veículos de um estacionamento")
+@Tag(name = "05 - Estacionamentos", description = "Contém todas as operações relativas ao recurso de entrada e saída de veículos de um estacionamento")
 @RestController
 @RequestMapping("api/v1/estacionamentos")
 @RequiredArgsConstructor
@@ -71,7 +71,7 @@ public class EstacionamentoController {
                                     schema = @Schema(implementation = ErrorMessage.class)))
             }
     )
-    @PostMapping("/check-in")
+    @PostMapping(value = "/check-in", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EstacionamentoResponseDto> checkIn(@RequestBody @Valid EstacionamentoCreateDto dto) {
         ClienteVaga clienteVaga = ClienteVagaMapper.toClienteVaga(dto);
@@ -106,7 +106,7 @@ public class EstacionamentoController {
                                     schema = @Schema(implementation = ErrorMessage.class)))
             }
     )
-    @GetMapping("/check-in/{recibo}")
+    @GetMapping(value = "/check-in/{recibo}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE')")
     public ResponseEntity<EstacionamentoResponseDto> getByRecibo(@PathVariable String recibo) {
         ClienteVaga clienteVaga = clienteVagaService.buscarPorRecibo(recibo);
@@ -136,7 +136,7 @@ public class EstacionamentoController {
                                     schema = @Schema(implementation = ErrorMessage.class)))
             }
     )
-    @PutMapping("/check-out/{recibo}")
+    @PutMapping(value = "/check-out/{recibo}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EstacionamentoResponseDto> checkOut(@PathVariable String recibo) {
         ClienteVaga clienteVaga = estacionamentoService.checkOut(recibo);
@@ -170,7 +170,7 @@ public class EstacionamentoController {
                                     schema = @Schema(implementation = ErrorMessage.class)))
             }
     )
-    @GetMapping("/cpf/{cpf}")
+    @GetMapping(value = "/cpf/{cpf}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageableDto> getAllEstacionamentosPorCpf(@PathVariable String cpf, @Parameter(hidden = true)
                                                                    @PageableDefault(size = 5, sort = {"dataEntrada"}) Pageable pageable) {
@@ -203,7 +203,7 @@ public class EstacionamentoController {
                                     schema = @Schema(implementation = ErrorMessage.class)))
             }
     )
-    @GetMapping("/cliente")
+    @GetMapping(value = "/cliente", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<PageableDto> getAllEstacionamentosDoCliente(@AuthenticationPrincipal JwtUserDetails user, @Parameter(hidden = true)
                                                                       @PageableDefault(size = 5, sort = {"dataEntrada"}) Pageable pageable) {

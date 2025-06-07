@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Autenticação", description = "Recurso para autenticação de usuários")
+@Tag(name = "01 - Autenticação", description = "Recurso para autenticação de usuários")
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -49,7 +50,7 @@ public class AutenticacaoController {
                                     schema = @Schema(implementation = ErrorMessage.class)))
             }
     )
-    @PostMapping("/auth")
+    @PostMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> autenticar(@RequestBody @Valid UsuarioLoginDto dto, HttpServletRequest request) {
         log.info("Processo de autenticação iniciado para o usuário: {}", dto.getUsername());
         try {

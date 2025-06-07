@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
-@Tag(name = "Clientes", description = "Contém todas as operações relativas ao recurso de um cliente")
+@Tag(name = "03 - Clientes", description = "Contém todas as operações relativas ao recurso de um cliente")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/clientes")
@@ -62,7 +63,7 @@ public class ClienteController {
                                     schema = @Schema(implementation = ErrorMessage.class)))
             }
     )
-    @PostMapping()
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<ClienteResponseDto> create(@RequestBody @Valid ClienteCreateDto dto, @AuthenticationPrincipal JwtUserDetails userDetails) {
         Cliente cliente = ClienteMapper.toCliente(dto);
@@ -90,7 +91,7 @@ public class ClienteController {
                                     schema = @Schema(implementation = ErrorMessage.class)))
             }
     )
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClienteResponseDto> getById(@PathVariable Long id) {
         Cliente cliente = clienteService.buscarPorId(id);
@@ -130,7 +131,7 @@ public class ClienteController {
                                     schema = @Schema(implementation = ErrorMessage.class)))
             }
     )
-    @GetMapping()
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageableDto> getAll(@Parameter(hidden = true) @PageableDefault(size = 5, sort = {"nome"}) Pageable pageable) {
         Page<ClienteProjection> clientes = clienteService.buscarTodos(pageable);
@@ -153,7 +154,7 @@ public class ClienteController {
                                     schema = @Schema(implementation = ErrorMessage.class)))
             }
     )
-    @GetMapping("/detalhes")
+    @GetMapping(value = "/detalhes", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<ClienteResponseDto> getDetails(@AuthenticationPrincipal JwtUserDetails userDetails) {
         Cliente cliente = clienteService.buscarPorUsuarioId(userDetails.getId());

@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
-@Tag(name = "Vagas", description = "Contém todas as operações relativas ao recurso de uma vaga")
+@Tag(name = "04 - Vagas", description = "Contém todas as operações relativas ao recurso de uma vaga")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/vagas")
@@ -84,7 +85,7 @@ public class VagaController {
                                     schema = @Schema(implementation = ErrorMessage.class)))
             }
     )
-    @GetMapping("/{codigo}")
+    @GetMapping(value = "/{codigo}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VagaResponseDto> getByCode(@PathVariable String codigo) {
         Vaga vaga = vagaService.buscarPorCodigo(codigo);
