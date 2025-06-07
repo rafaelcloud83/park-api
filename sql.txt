@@ -1,0 +1,97 @@
+// buscar dados
+SELECT * FROM clientes_vagas;
+SELECT * FROM vagas;
+SELECT * FROM clientes;
+SELECT * FROM usuarios;
+
+// sql para relatório
+SELECT
+    clientes.cpf,
+    clientes.nome,
+    clientes_vagas.cor,
+    clientes_vagas.desconto,
+    clientes_vagas.marca,
+    clientes_vagas.modelo,
+    clientes_vagas.placa,
+    clientes_vagas.numero_recibo,
+    clientes_vagas.valor,
+    vagas.codigo,
+    clientes_vagas.data_entrada,
+    clientes_vagas.data_saida,
+    TRUNC(EXTRACT(EPOCH FROM (clientes_vagas.data_saida - clientes_vagas.data_entrada)) / 3600)::INT AS hours,
+    TRUNC(MOD(EXTRACT(EPOCH FROM (clientes_vagas.data_saida - clientes_vagas.data_entrada)) / 60, 60))::INT AS minutes
+FROM clientes_vagas
+INNER JOIN clientes
+    ON clientes_vagas.id_cliente = clientes.id
+INNER JOIN vagas
+    ON clientes_vagas.id_vaga = vagas.id
+WHERE clientes.cpf = '61717143059'
+ORDER BY clientes_vagas.placa;
+
+// criar usuários
+// todos senha 123456
+INSERT INTO "usuarios" ("criado_por", "data_criacao", "data_modificacao", "modificado_por", "password", "role", "username")
+VALUES ('anonymousUser', '2025-05-23 18:51:00.659084', '2025-05-23 18:51:00.659084', 'anonymousUser',
+'$2a$10$oAl5vPUXbDuMTMNTWCcYDeORt9Ool3kywdybCv/3nw63LB1bONcDG', 'ROLE_ADMIN', 'admin@email.com');
+INSERT INTO "usuarios" ("criado_por", "data_criacao", "data_modificacao", "modificado_por", "password", "role", "username")
+VALUES ('anonymousUser', '2025-05-23 18:51:10.849756', '2025-05-23 18:51:10.849756', 'anonymousUser',
+'$2a$10$ZIoB2vfdJSKPdFnaLP0Vmu.pWfJNs9lpIkBGkvvHHO/MmnrIs.YSq', 'ROLE_CLIENTE', 'maria@email.com');
+INSERT INTO "usuarios" ("criado_por", "data_criacao", "data_modificacao", "modificado_por", "password", "role", "username")
+VALUES ('anonymousUser', '2025-05-23 18:51:16.786821', '2025-05-23 18:51:16.786821', 'anonymousUser',
+'$2a$10$X9mGtAjBwVnGd7iChSwO1eytP/mdCM8TZrnVymKJwOvaJEn.VPds6', 'ROLE_CLIENTE', 'joao@email.com');
+INSERT INTO "usuarios" ("criado_por", "data_criacao", "data_modificacao", "modificado_por", "password", "role", "username")
+VALUES ('anonymousUser', '2025-05-23 18:51:23.279561', '2025-05-23 18:51:23.279561', 'anonymousUser',
+'$2a$10$xb48d950YupxaaZtEtn3FOiXndqmeJKmhSiAV/0w.o21144Bb16TO', 'ROLE_CLIENTE', 'jose@email.com');
+INSERT INTO "usuarios" ("criado_por", "data_criacao", "data_modificacao", "modificado_por", "password", "role", "username")
+VALUES ('anonymousUser', '2025-05-23 18:51:30.263742', '2025-05-23 18:51:30.263742', 'anonymousUser',
+'$2a$10$B6n3Qseo792tadkyuEoQ..laTnpdCg3dfwckiCbcVI8l/K.K.CwWK', 'ROLE_CLIENTE', 'ana@email.com');
+INSERT INTO "usuarios" ("criado_por", "data_criacao", "data_modificacao", "modificado_por", "password", "role", "username")
+VALUES ('anonymousUser', '2025-05-23 18:51:36.891906', '2025-05-23 18:51:36.891906', 'anonymousUser',
+'$2a$10$5P1K9FKkCYiscDSGO7xTF.dPsHewPDTJE6ZBppc5ToTdPU.vkZoLK', 'ROLE_CLIENTE', 'bia@email.com');
+INSERT INTO "usuarios" ("criado_por", "data_criacao", "data_modificacao", "modificado_por", "password", "role", "username")
+VALUES ('anonymousUser', '2025-05-23 18:51:48.387542', '2025-05-23 18:51:48.387542', 'anonymousUser',
+'$2a$10$DDruRfe/suP5K9kAOTR.K.jDOLsIuSETnJ5EGyE3dcrRL69t98tcG', 'ROLE_CLIENTE', 'fabio@email.com');
+
+// criar clientes
+INSERT INTO "clientes" ("cpf", "criado_por", "data_criacao", "data_modificacao", "modificado_por", "nome", "id_usuario")
+VALUES ('38641465006', 'maria@email.com', '2025-05-23 18:53:32.288212', '2025-05-23 18:53:32.288212', 'maria@email.com',
+'Maria Silva', '2');
+INSERT INTO "clientes" ("cpf", "criado_por", "data_criacao", "data_modificacao", "modificado_por", "nome", "id_usuario")
+VALUES ('23628905036', 'joao@email.com', '2025-05-23 18:56:46.055886', '2025-05-23 18:56:46.055886', 'joao@email.com',
+'João Santos', '3');
+INSERT INTO "clientes" ("cpf", "criado_por", "data_criacao", "data_modificacao", "modificado_por", "nome", "id_usuario")
+VALUES ('23493704020', 'jose@email.com', '2025-05-23 18:57:34.391059', '2025-05-23 18:57:34.391059', 'jose@email.com',
+'José Souza', '4');
+INSERT INTO "clientes" ("cpf", "criado_por", "data_criacao", "data_modificacao", "modificado_por", "nome", "id_usuario")
+VALUES ('61717143059', 'ana@email.com', '2025-05-23 18:58:31.604444', '2025-05-23 18:58:31.604444', 'ana@email.com',
+'Ana Cavalcante', '5');
+INSERT INTO "clientes" ("cpf", "criado_por", "data_criacao", "data_modificacao", "modificado_por", "nome", "id_usuario")
+VALUES ('04278924062', 'bia@email.com', '2025-05-23 18:59:20.083289', '2025-05-23 18:59:20.083289', 'bia@email.com',
+'Bianca Toledo', '6');
+INSERT INTO "clientes" ("cpf", "criado_por", "data_criacao", "data_modificacao", "modificado_por", "nome", "id_usuario")
+VALUES ('18217616000', 'fabio@email.com', '2025-05-23 19:00:18.961675', '2025-05-23 19:00:18.961675', 'fabio@email.com',
+'Fabio Castro', '7');
+
+// criar vagas
+INSERT INTO "vagas" ("codigo", "criado_por", "data_criacao", "data_modificacao", "modificado_por", "status")
+VALUES ('A-01', 'admin@email.com', '2025-05-23 22:22:10.126389', '2025-05-25 21:17:00.392129', 'admin@email.com', 'LIVRE');
+INSERT INTO "vagas" ("codigo", "criado_por", "data_criacao", "data_modificacao", "modificado_por", "status")
+VALUES ('A-02', 'admin@email.com', '2025-05-24 15:39:36.480442', '2025-05-24 15:39:36.480442', 'admin@email.com', 'LIVRE');
+INSERT INTO "vagas" ("codigo", "criado_por", "data_criacao", "data_modificacao", "modificado_por", "status")
+VALUES ('A-03', 'admin@email.com', '2025-05-25 21:08:09.956093', '2025-05-25 21:23:15.314089', 'admin@email.com', 'LIVRE');
+INSERT INTO "vagas" ("codigo", "criado_por", "data_criacao", "data_modificacao", "modificado_por", "status")
+VALUES ('A-04', 'admin@email.com', '2025-05-25 21:08:20.859568', '2025-05-25 21:44:47.641828', 'admin@email.com', 'LIVRE');
+
+// OBS:. o estacionamento de veículos deve ser feito pelo Swagger ou pelo API Client, usei o Insomnia
+
+// apagar os dados de uma tabela e zerar o auto increment do id
+TRUNCATE TABLE usuarios RESTART IDENTITY;
+TRUNCATE TABLE clientes RESTART IDENTITY;
+TRUNCATE TABLE vagas RESTART IDENTITY;
+TRUNCATE TABLE clientes_vagas RESTART IDENTITY;
+
+// apagar as tabelas
+DROP TABLE clientes_vagas;
+DROP TABLE vagas;
+DROP TABLE clientes;
+DROP TABLE usuarios;
