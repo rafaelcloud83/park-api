@@ -65,4 +65,9 @@ public class UsuarioService {
     public Usuario.Role buscarRolePorUsername(String username) {
         return usuarioRepository.findRoleByUsername(username);
     }
+
+    @Transactional(readOnly = true)
+    public Long contarUsuarios() {
+        return usuarioRepository.count();
+    }
 }
