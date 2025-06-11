@@ -1,5 +1,5 @@
 INSERT INTO USUARIOS (id, username, password, role)
-    VALUES (100, 'admin@email.com', '$2a$10$xihFxLv3NqzQbLgwJc5FaOLhd7lkPi8pQHfMfQN8rMeMbspDK0BUi', 'ROLE_ADMIN');
+    VALUES (100, 'adm@email.com', '$2a$10$xihFxLv3NqzQbLgwJc5FaOLhd7lkPi8pQHfMfQN8rMeMbspDK0BUi', 'ROLE_ADMIN');
 INSERT INTO USUARIOS (id, username, password, role)
     VALUES (101, 'maria@email.com', '$2a$10$xihFxLv3NqzQbLgwJc5FaOLhd7lkPi8pQHfMfQN8rMeMbspDK0BUi', 'ROLE_CLIENTE');
 INSERT INTO USUARIOS (id, username, password, role)

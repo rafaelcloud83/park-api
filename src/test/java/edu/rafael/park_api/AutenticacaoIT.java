@@ -25,7 +25,7 @@ public class AutenticacaoIT {
                 .post()
                 .uri("/api/v1/auth")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioLoginDto("admin@email.com", "123456"))
+                .bodyValue(new UsuarioLoginDto("adm@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(JwtToken.class)
