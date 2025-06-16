@@ -240,7 +240,7 @@ Para acessar a documentação da API e os Endpoints, acesse o link: http://local
 
 [voltar ao início](#sumário)
 
-URL base (baseURL): http://localhost:8080
+URL base (baseURL): http://localhost:8080/api/v1
 
 ### Públicos
 
@@ -250,7 +250,7 @@ Nos endpoints públicos, nenhuma autenticação é necessária.
 
 <br>
 
-**POST** - baseURL/api/v1/usuarios
+**POST** - baseURL/usuarios
 - Cria um novo usuário.
 - Retorna dados do usuário criado.
 
@@ -272,7 +272,7 @@ Resposta: 201
 
 <br>
 
-**POST** - baseURL/api/v1/auth
+**POST** - baseURL/auth
 - Realiza o login do usuário e retorna um token.
 
 Requisição:
@@ -301,7 +301,7 @@ Nos endpoints de Usuários, a autenticação por token é necessária, menos na 
 
 <br>
 
-**PATCH** - baseURL/api/usuarios/{id}
+**PATCH** - baseURL/usuarios/{id}
 - {id} é o id do usuário. Ex: 2.
 - Altera a senha do usuário logado.
 - Requer autenticação com role Admin ou Cliente.
@@ -319,7 +319,7 @@ Resposta: 204
 
 <br>
 
-**GET** - baseURL/api/v1/usuarios/{id}
+**GET** - baseURL/usuarios/{id}
 - {id} é o id do usuário. Ex: 2.
 - Retorna um usuário pelo id.
 - Requer autenticação com role Admin ou Cliente.
@@ -335,7 +335,7 @@ Resposta: 200
 
 <br>
 
-**GET** - baseURL/api/v1/usuarios
+**GET** - baseURL/usuarios
 - Retorna todos os usuários.
 - Requer autenticação com role Admin.
 
@@ -367,7 +367,7 @@ Nos endpoints de Clientes, a autenticação por token é necessária.
 
 <br>
 
-**POST** - baseURL/api/v1/clientes
+**POST** - baseURL/clientes
 - Cria um novo cliente para o usuário logado.
 - Retorna dados do cliente.
 - Requer autenticação com role Cliente.
@@ -390,7 +390,7 @@ Resposta: 201
 
 <br>
 
-**GET** - baseURL/api/v1/clientes/detalhes
+**GET** - baseURL/clientes/detalhes
 - Retorna dados do cliente logado.
 - Requer autenticação com role Cliente.
 
@@ -405,7 +405,7 @@ Resposta: 200
 
 <br>
 
-**GET** - baseURL/api/v1/clientes/{id}
+**GET** - baseURL/clientes/{id}
 - {id} é o id do cliente. Ex: 1.
 - Retorna dados do cliente.
 - Requer autenticação com role Admin.
@@ -421,7 +421,7 @@ Resposta: 200
 
 <br>
 
-**GET** - baseURL/api/v1/clientes
+**GET** - baseURL/clientes
 - Retorna dados de todos os clientes.
 - Requer autenticação com role Admin.
 
@@ -457,7 +457,7 @@ Nos endpoints de Vagas, a autenticação por token é necessária.
 
 <br>
 
-**POST** - baseURL/api/v1/vagas
+**POST** - baseURL/vagas
 - Cria um nova vaga.
 - Requer autenticação com role Admin.
 
@@ -472,7 +472,7 @@ Resposta: 201
 
 <br>
 
-**GET** - baseURL/api/v1/vagas/{codigo}
+**GET** - baseURL/vagas/{codigo}
 - {codigo} é o código da vaga. Ex: A-01.
 - Retorna dados da vaga.
 - Requer autenticação com role Admin.
@@ -496,7 +496,7 @@ Contém todas as operações relacionadas a entrada e saída do estacionamento.
 
 Nos endpoints de Estacionamentos, a autenticação por token é necessária.
 
-**POST** - baseURL/api/v1/estacionamentos/check-in
+**POST** - baseURL/estacionamentos/check-in
 - Cria uma entrada (checkIn) de veículos.
 - Retorna dados do checkIn.
 - Requer autenticação com role Admin.
@@ -527,7 +527,7 @@ Resposta: 201
 
 <br>
 
-**GET** - baseURL/api/v1/estacionamentos/check-in/{recibo}
+**GET** - baseURL/estacionamentos/check-in/{recibo}
 - {recibo} é o número do recibo gerado na entrada do veículo. Ex: 20250610-193710.
 - Retorna os dados do checkIn.
 - Requer autenticação com role Admin ou Cliente.
@@ -548,7 +548,7 @@ Resposta: 200
 
 <br>
 
-**PUT** - baseURL/api/v1/estacionamentos/check-out/{recibo}
+**PUT** - baseURL/estacionamentos/check-out/{recibo}
 - {recibo} é o número do recibo gerado na entrada do veículo. Ex: 20250610-193710.
 - Gera uma saída (checkOut) de veículo pelo recibo.
 - Retorna dados do checkOut.
@@ -573,7 +573,7 @@ Resposta: 200
 
 <br>
 
-**GET** - baseURL/api/v1/estacionamentos/cpf/{cpf}
+**GET** - baseURL/estacionamentos/cpf/{cpf}
 - {cpf} é o número do cpf do cliente. Ex: 15461776043.
 - Retorna todos os estacionamentos do cliente pelo cpf.
 - Requer autenticação com role Admin.
@@ -608,7 +608,7 @@ Resposta: 200
 
 <br>
 
-**GET** - baseURL/api/v1/estacionamentos/cliente
+**GET** - baseURL/estacionamentos/cliente
 - Retorna todos os estacionamentos do cliente logado.
 - Requer autenticação com role Cliente.
 
@@ -642,7 +642,7 @@ Resposta: 200
 
 <br>
 
-**GET** - baseURL/api/v1/estacionamentos/relatorio
+**GET** - baseURL/estacionamentos/relatorio
 - Retorna um relatório em PDF com todos os estacionamentos do cliente logado.
 - Requer autenticação com role Cliente.
 
